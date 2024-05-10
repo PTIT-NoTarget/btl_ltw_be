@@ -55,7 +55,10 @@ router.post("/register", parser.single("avatar"), async (request, response) => {
     occupation: request.body.occupation,
     avatar: request.file.path,
   });
-  console.log(user);
+  const checkUser = await User.findOne({ username: user.username });
+  if (checkUser) {
+    return response.status(400).json({ message: "Username already exists" });
+  }
   user.save()
     .then((data) => {
       response.json(data);
