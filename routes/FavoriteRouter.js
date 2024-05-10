@@ -9,9 +9,15 @@ router.post("/:postId", async (request, response) => {
       user_id: userId,
       post_id: request.params.postId,
     });
-    const existingFavorite = await Favorite.findOne({ user_id: userId, post_id: request.params.postId });
+    const existingFavorite = await Favorite.findOne({
+      user_id: userId,
+      post_id: request.params.postId,
+    });
     if (existingFavorite) {
-      await Favorite.findOneAndDelete({ user_id: userId, post_id: request.params.postId })
+      await Favorite.findOneAndDelete({
+        user_id: userId,
+        post_id: request.params.postId,
+      })
         .then(() => {
           response.json({ message: "Favorite removed" });
         })
@@ -19,7 +25,8 @@ router.post("/:postId", async (request, response) => {
           response.status(400).json({ message: error.message });
         });
     } else {
-      favorite.save()
+      favorite
+        .save()
         .then((data) => {
           response.json(data);
         })
@@ -30,22 +37,25 @@ router.post("/:postId", async (request, response) => {
   });
 });
 
-
 router.get("/count/:postId", async (request, response) => {
   validateToken(request, response, async () => {
-    const count = await Favorite.countDocuments({ post_id: request.params.postId });
+    const count = await Favorite.countDocuments({
+      post_id: request.params.postId,
+    });
     response.json({ count });
   });
 });
 
 router.get("/check/:postId", async (request, response) => {
   validateToken(request, response, async (userId) => {
-    const favorites = await Favorite.findOne({ post_id: request.params.postId, user_id: userId });
-    if(favorites){
-      response.json({isFavorite: true});
-    }
-    else{
-      response.json({isFavorite: false});
+    const favorites = await Favorite.findOne({
+      post_id: request.params.postId,
+      user_id: userId,
+    });
+    if (favorites) {
+      response.json({ isFavorite: true });
+    } else {
+      response.json({ isFavorite: false });
     }
   });
 });

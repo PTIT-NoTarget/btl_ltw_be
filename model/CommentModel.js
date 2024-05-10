@@ -4,13 +4,14 @@ const commentSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
   user_id: { type: mongoose.Schema.Types.ObjectId },
   post_id: { type: mongoose.Schema.Types.ObjectId },
-  time: { 
-    type: Date 
+  time: {
+    type: Date,
   },
-  content: { 
+  content: {
     type: String,
-    required: [true, "Please enter a comment"]
-  }
+    required: [true, "Please enter a comment"],
+  },
 });
 
-module.exports = mongoose.model.Comments || mongoose.model("comments", commentSchema);
+module.exports =
+  mongoose.model.Comments || mongoose.model("comments", commentSchema);

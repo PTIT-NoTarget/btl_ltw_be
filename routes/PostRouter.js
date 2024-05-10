@@ -6,14 +6,16 @@ const upload = require("../utils/Upload");
 
 router.get("/list", async (request, response) => {
   validateToken(request, response, async (userId) => {
-    const posts = await Post.find({ user_id: userId })
+    const posts = await Post.find({ user_id: userId }).sort({ time: -1 });
     response.json(posts);
   });
 });
 
 router.get("/list/:userId", async (request, response) => {
   validateToken(request, response, async () => {
-    const posts = await Post.find({ user_id: request.params.userId });
+    const posts = await Post.find({ user_id: request.params.userId }).sort({
+      time: -1,
+    });
     response.json(posts);
   });
 });
@@ -26,7 +28,8 @@ router.post("/new", upload("image"), async (request, response) => {
       image: request.file?.path,
       time: new Date(),
     });
-    post.save()
+    post
+      .save()
       .then((data) => {
         response.json(data);
       })
@@ -40,7 +43,11 @@ router.post("/update/:id", upload("image"), async (request, response) => {
   validateToken(request, response, async () => {
     try {
       let update = { ...request.body, image: request.file?.path };
-      const updatedPost = await Post.findOneAndUpdate({ _id: request.params.id }, update, { new: true });
+      const updatedPost = await Post.findOneAndUpdate(
+        { _id: request.params.id },
+        update,
+        { new: true }
+      );
       response.json(updatedPost);
     } catch (error) {
       response.status(400).json({ message: error.message });

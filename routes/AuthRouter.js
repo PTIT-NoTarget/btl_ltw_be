@@ -1,5 +1,5 @@
 const express = require("express");
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../model/UserModel");
 const router = express.Router();
@@ -13,7 +13,7 @@ const hashPassword = async (password) => {
 
 const comparePassword = async (password, hash) => {
   return await bcrypt.compare(password, hash);
-}
+};
 
 router.post("/login", async (request, response) => {
   const { username, password } = request.body;
@@ -44,7 +44,8 @@ router.post("/register", upload("avatar"), async (request, response) => {
   if (checkUser) {
     return response.status(400).json({ message: "Username already exists" });
   }
-  user.save()
+  user
+    .save()
     .then((data) => {
       response.json(data);
     })
@@ -56,12 +57,18 @@ router.post("/register", upload("avatar"), async (request, response) => {
 router.post("/reset-password", async (request, response) => {
   validateToken(request, response, async (userId) => {
     const user = await User.findOne({ _id: userId });
-    const validPassword = await comparePassword(request.body.oldPassword, user.password);
+    const validPassword = await comparePassword(
+      request.body.oldPassword,
+      user.password
+    );
     if (!validPassword) {
-      return response.status(400).json({ message: "Old password is incorrect" });
+      return response
+        .status(400)
+        .json({ message: "Old password is incorrect" });
     }
     user.password = await hashPassword(request.body.newPassword);
-    user.save()
+    user
+      .save()
       .then((data) => {
         response.json(data);
       })

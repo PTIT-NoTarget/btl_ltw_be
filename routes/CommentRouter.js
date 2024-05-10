@@ -11,7 +11,8 @@ router.post("/:postId", async (request, response) => {
       post_id: request.params.postId,
       time: new Date(),
     });
-    comment.save()
+    comment
+      .save()
       .then((data) => {
         response.json(data);
       })
@@ -23,14 +24,18 @@ router.post("/:postId", async (request, response) => {
 
 router.get("/list/:postId", async (request, response) => {
   validateToken(request, response, async () => {
-    const comments = await Comment.find({ post_id: request.params.postId });
+    const comments = await Comment.find({
+      post_id: request.params.postId,
+    }).sort({ time: -1 });
     response.json(comments);
   });
 });
 
 router.get("/count/:postId", async (request, response) => {
   validateToken(request, response, async () => {
-    const count = await Comment.countDocuments({ post_id: request.params.postId });
+    const count = await Comment.countDocuments({
+      post_id: request.params.postId,
+    });
     response.json({ count });
   });
 });

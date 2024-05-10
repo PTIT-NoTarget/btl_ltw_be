@@ -6,11 +6,11 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please post an image"],
   },
-  time: {  
-    type: Date
+  time: {
+    type: Date,
   },
-  caption: { 
-    type: String 
+  caption: {
+    type: String,
   },
   user_id: { type: mongoose.Schema.Types.ObjectId },
 });

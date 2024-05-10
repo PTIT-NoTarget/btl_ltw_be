@@ -7,7 +7,10 @@ const validateToken = (request, response, next) => {
     return response.status(401).json({ message: "Access denied" });
   }
   try {
-    const verified = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET_KEY);
+    const verified = jwt.verify(
+      token.split(" ")[1],
+      process.env.JWT_SECRET_KEY
+    );
     next(verified.id);
   } catch (error) {
     response.status(400).json({ message: "Invalid token" });

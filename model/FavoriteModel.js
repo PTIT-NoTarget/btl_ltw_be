@@ -6,4 +6,5 @@ const favoriteSchema = new mongoose.Schema({
   post_id: { type: mongoose.Schema.Types.ObjectId },
 });
 
-module.exports = mongoose.model.Favorites || mongoose.model("favorites", favoriteSchema);
+module.exports =
+  mongoose.model.Favorites || mongoose.model("favorites", favoriteSchema);

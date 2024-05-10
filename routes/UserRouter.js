@@ -7,8 +7,10 @@ const upload = require("../utils/Upload");
 router.post("/", upload("avatar"), async (request, response) => {
   validateToken(request, response, async (_id) => {
     try {
-      let update = {...request.body, avatar: request.file?.path};
-      const updatedUser = await User.findOneAndUpdate({ _id }, update, { new: true });
+      let update = { ...request.body, avatar: request.file?.path };
+      const updatedUser = await User.findOneAndUpdate({ _id }, update, {
+        new: true,
+      });
       response.json(updatedUser);
     } catch (error) {
       response.status(400).json({ message: error.message });
@@ -18,7 +20,7 @@ router.post("/", upload("avatar"), async (request, response) => {
 
 router.get("/list", async (request, response) => {
   validateToken(request, response, async () => {
-    const users = await User.find();
+    const users = await User.find().sort({ first_name: 1 });
     response.json(users);
   });
 });
@@ -31,6 +33,19 @@ router.get("/:id", async (request, response) => {
     } catch (error) {
       response.status(400).json({ message: "User does not exist" });
     }
+  });
+});
+
+router.get("/search/:text", async (request, response) => {
+  validateToken(request, response, async () => {
+    const users = await User.find({
+      $or: [
+        { first_name: { $regex: request.params.text, $options: "i" } },
+        { last_name: { $regex: request.params.text, $options: "i" } },
+        { username: { $regex: request.params.text, $options: "i" } },
+      ],
+    });
+    response.json(users);
   });
 });
 
