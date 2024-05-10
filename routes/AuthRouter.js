@@ -1,11 +1,9 @@
 const express = require("express");
-const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('../config/CloudinaryConfig');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const User = require("../model/UserModel");
 const router = express.Router();
+const upload = require("../utils/Upload");
 
 router.post("/login", async (request, response) => {
   const { username, password } = request.body;
@@ -25,16 +23,6 @@ router.post("/logout", async (request, response) => {
   
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'avatar',
-    format: async (req, file) => 'png'
-  },
-});
-
-const parser = multer({ storage: storage });
-
 const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
@@ -44,7 +32,7 @@ const comparePassword = async (password, hash) => {
   return await bcrypt.compare(password, hash);
 }
 
-router.post("/register", parser.single("avatar"), async (request, response) => {
+router.post("/register", upload("avatar"), async (request, response) => {
   const user = new User({
     username: request.body.username,
     password: await hashPassword(request.body.password),
