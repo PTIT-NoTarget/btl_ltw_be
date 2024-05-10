@@ -7,8 +7,10 @@ const commentSchema = new mongoose.Schema({
   time: { 
     type: Date 
   },
-  comment: { 
+  content: { 
     type: String,
     required: [true, "Please enter a comment"]
   }
 });
+
+module.exports = mongoose.model.Comments || mongoose.model("comments", commentSchema);

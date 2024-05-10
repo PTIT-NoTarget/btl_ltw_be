@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
-  url: {
+  image: {
     type: String,
     required: [true, "Please post an image"],
   },
@@ -12,5 +12,7 @@ const postSchema = new mongoose.Schema({
   caption: { 
     type: String 
   },
-  user: { type: mongoose.Schema.Types.ObjectId },
+  user_id: { type: mongoose.Schema.Types.ObjectId },
 });
+
+module.exports = mongoose.model.Posts || mongoose.model("posts", postSchema);
