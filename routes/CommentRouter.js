@@ -14,6 +14,10 @@ router.post("/:postId", async (request, response) => {
     comment
       .save()
       .then((data) => {
+        data = {
+          ...data._doc,
+          children: [],
+        };
         response.json(data);
       })
       .catch((error) => {
@@ -22,12 +26,37 @@ router.post("/:postId", async (request, response) => {
   });
 });
 
+const getChildren = (comments, parent_id) => {
+  const children = comments.filter((c) => {
+    if(c.parent_id === null) {
+      return false;
+    }
+    return c.parent_id.toString() === parent_id.toString();
+  });
+  if (children.length === 0) {
+    return [];
+  }
+  return children.map((child) => ({
+    ...child._doc,
+    children: getChildren(comments, child._id),
+  }));
+}
+
 router.get("/list/:postId", async (request, response) => {
   validateToken(request, response, async () => {
     const comments = await Comment.find({
       post_id: request.params.postId,
-    }).sort({ time: -1 });
-    response.json(comments);
+    }).sort({ time: 1 });
+    const result = [];
+    for (let comment of comments) {
+      if (comment.parent_id === null) {
+        result.push({
+          ...comment._doc,
+          children: getChildren(comments, comment._id),
+        });
+      }
+    }
+    response.json(result);
   });
 });
 

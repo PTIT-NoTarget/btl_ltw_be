@@ -8,6 +8,7 @@ router.post("/", upload("avatar"), async (request, response) => {
   validateToken(request, response, async (_id) => {
     try {
       let update = { ...request.body, avatar: request.file?.path };
+      console.log(update);
       const updatedUser = await User.findOneAndUpdate({ _id }, update, {
         new: true,
       });

@@ -43,6 +43,7 @@ router.post("/update/:id", upload("image"), async (request, response) => {
   validateToken(request, response, async () => {
     try {
       let update = { ...request.body, image: request.file?.path };
+      console.log(update);
       const updatedPost = await Post.findOneAndUpdate(
         { _id: request.params.id },
         update,

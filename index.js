@@ -18,6 +18,6 @@ app.use("/api/comment", CommentRouter);
 app.use("/api/favorite", FavoriteRouter);
 app.use("/api/auth", AuthRouter);
 
-app.listen(8080, () => {
+app.listen(8081, () => {
   console.log("server listening on port 8080");
 });
