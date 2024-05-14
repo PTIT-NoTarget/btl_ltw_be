@@ -18,6 +18,17 @@ router.post("/", upload("avatar"), async (request, response) => {
   });
 });
 
+router.get("/profile", async (request, response) => {
+  validateToken(request, response, async (_id) => {
+    try {
+      const user = await User.findById(_id);
+      response.json(user);
+    } catch (error) {
+      response.status(400).json({ message: "User does not exist" });
+    }
+  });
+});
+
 router.get("/list", async (request, response) => {
   validateToken(request, response, async () => {
     const users = await User.find().sort({ first_name: 1 });

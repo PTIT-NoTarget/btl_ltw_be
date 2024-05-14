@@ -25,7 +25,10 @@ router.post("/login", async (request, response) => {
   if (!validPassword) {
     return response.status(400).json({ message: "Password is incorrect" });
   }
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
+  // 1h token expiration
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY , {
+    expiresIn: "1h",
+  });
   response.header("auth-token", token).json({ token });
 });
 

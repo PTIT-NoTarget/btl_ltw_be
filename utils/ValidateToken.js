@@ -11,7 +11,7 @@ const validateToken = (request, response, next) => {
       token.split(" ")[1],
       process.env.JWT_SECRET_KEY
     );
-    next(verified.id);
+    next(verified._id);
   } catch (error) {
     response.status(400).json({ message: "Invalid token" });
   }
